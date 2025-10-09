@@ -1,4 +1,6 @@
 import User from './../models/user.js';
+import md5 from 'md5';
+
 const postSignup = async(req, res)=>{ 
     const { name, email, password } = req.body;
 
@@ -32,20 +34,21 @@ const postSignup = async(req, res)=>{
         });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email, password: md5(password) }).select('-password');
     if (existingUser) {
-        return res.status(400).json({
+        return res.status(409).json({
             success: false,
-            message: 'User already exists'
+            message: 'User with this email already exists'
         });
+        
     }
-
-    const newUser = new User({ name, email, password });
+    
+    const newUser = new User({ name, email, password: md5(password) });
 
     const savedUser = await newUser.save();
     res.json({ success: true, 
     message: 'User registered successfully',
-        user: savedUser });
+    user: savedUser });
 }
 
 const postLogin = async (req, res)=>{ 
@@ -58,18 +61,19 @@ const postLogin = async (req, res)=>{
         });
     }
 
-    const existingUser = await User.findOne({ email, password });
-    if (!existingUser) {
+    const existingUser = await User.findOne({ email, password: md5(password) }).select('-password');
+    if (existingUser) {
         return res.status(401).json({
-            success: false,
-            message: 'Invalid email or password'
+            success: true,
+            message: 'User logged in successfully',
+            user: existingUser
         });
     }
 
     res.json({
-        success: true,
-        message: 'Login successfully',
-        user: existingUser
+        success: false,
+        message: 'Login failed.',
+        user: null
     });
 };
 

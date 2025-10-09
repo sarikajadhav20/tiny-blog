@@ -1,15 +1,16 @@
 import { Link } from 'react-router';
-import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 
 function Login() {
-    const [user, setUser] = React.useState({ email: '', password: '' });
+    const [user, setUser] = useState({ email: '', password: '' });
 
     const loginUser = async () => {
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`, user);
-
-        console.log(response.data);
+        if (response?.data?.success) {
+            localStorage.setItem('LoggedInUser', JSON.stringify(response.data.user));
+            window.location.href = "/";
+        }
     };
 
   return (
@@ -19,8 +20,8 @@ function Login() {
       <div>
         <form className='max-w-md mx-auto mt-10 p-6 border border-gray-300 rounded-lg shadow-md'>
             <input
-             type="email"
-              placeholder='Email'
+               type="email"
+               placeholder='Email'
                className='w-full mb-4 p-2 border border-gray-300 rounded cursor-pointer hover:border-blue-500' 
                value={user.email} 
                onChange={(e) => setUser({ ...user, email: e.target.value })}
@@ -45,4 +46,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Login;
