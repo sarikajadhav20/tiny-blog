@@ -1,9 +1,9 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import mongoose, { get } from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { postSignup, postLogin } from './controllers/user.js';
-import { postBlogs } from './controllers/blogs.js';
+import { postBlogs, getBlogs } from './controllers/blogs.js';
 
 dotenv.config();
 const app = express();
@@ -57,6 +57,7 @@ app.get('/api/test2', (req, res) => {
 
 app.post('/signup',postSignup);
 app.post('/login',postLogin);
+app.get('/blogs', getBlogs);
 app.post('/blogs',postBlogs);
 
 const PORT = process.env.PORT || 8080;
