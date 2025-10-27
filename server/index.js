@@ -3,7 +3,7 @@ import mongoose, { get } from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { postSignup, postLogin } from './controllers/user.js';
-import { postBlogs, getBlogs,getBlogForSlug, patchPublishBlog} from './controllers/blogs.js';
+import { postBlogs, getBlogs,getBlogForSlug, patchPublishBlog, putBlogs} from './controllers/blogs.js';
 
 dotenv.config();
 const app = express();
@@ -61,6 +61,7 @@ app.get('/blogs', getBlogs);
 app.post('/blogs',postBlogs);
 app.get('/blogs/:slug',getBlogForSlug);
 app.patch('/blogs/:slug/publish',patchPublishBlog);
+app.put('/blogs/:slug',putBlogs);
 
 const PORT = process.env.PORT || 8080;
 

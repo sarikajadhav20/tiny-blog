@@ -72,4 +72,25 @@ const patchPublishBlog=async(req,res)=>{
     });
 };
 
-export { postBlogs, getBlogs,getBlogForSlug, patchPublishBlog };
+const putBlogs=async(req,res)=>{
+    const {slug}=req.params;
+    const {title,category,content}=req.body;
+
+   if(!title || !category || !content){
+        return res.status(400).json({
+            success:false,
+            message:'title, category and content are required'
+        });
+   }
+
+    const blog=await Blog.findAndUpdate({slug:slug},{title,category,content});
+
+    return res.status(200).json({
+        success:true,
+        message:'Blog updated successfully',
+        data:blog
+    });
+};
+
+
+export { postBlogs, getBlogs,getBlogForSlug, patchPublishBlog, putBlogs };

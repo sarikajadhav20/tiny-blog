@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
 import MarkdownEditor from '@uiw/react-markdown-editor';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BLOG_CATEGORIES } from './../constants';
 import axios from 'axios';
 import { getCurrentUser } from './../util';
@@ -25,14 +24,16 @@ function EditBlog() {
   
   useEffect(() => {
     setUser(getCurrentUser());
+    loadBlog();
+    PublishBlog();
   }, []);
 
   const saveBlog = async () => {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/blogs`, 
+    const response = await axios.put(`${import.meta.env.VITE_API_URL}/blogs/${slug}`, 
       { title,
         category, 
-        content, 
-        author: user._id});
+        content
+      });
 
     if(response?.data?.success) {
       toast.success("Blog saved successfully");
